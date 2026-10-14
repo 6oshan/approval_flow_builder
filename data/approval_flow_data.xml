@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <!-- Email notifications are enabled by default (Configuration screen, SRS FR-14). -->
+    <record id="config_param_email_notify" model="ir.config_parameter">
+        <field name="key">approval_flow_builder.email_notify</field>
+        <field name="value">True</field>
+    </record>
+</odoo>

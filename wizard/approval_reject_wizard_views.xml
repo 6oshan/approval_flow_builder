@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_approval_reject_wizard_form" model="ir.ui.view">
+        <field name="name">approval.flow.reject.wizard.form</field>
+        <field name="model">approval.flow.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Approval Request">
+                <field name="request_ids" invisible="1"/>
+                <p class="text-muted">
+                    Rejecting stops the approval flow. The requester is notified with your reason
+                    and can edit the Purchase Order and submit it again.
+                </p>
+                <group>
+                    <field name="reason" placeholder="e.g. Price is too high, please get another quotation."/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Reject" class="btn-danger"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

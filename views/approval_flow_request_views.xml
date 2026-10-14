@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Search view: filters and group-by for both menus              -->
+    <!-- ============================================================ -->
+    <record id="view_approval_flow_request_search" model="ir.ui.view">
+        <field name="name">approval.flow.request.search</field>
+        <field name="model">approval.flow.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Purchase Order"/>
+                <field name="partner_id"/>
+                <field name="requester_id"/>
+                <field name="flow_id"/>
+                <filter name="waiting_for_me" string="Waiting for Me"
+                        domain="[('waiting_for_me', '=', True)]"/>
+                <filter name="my_requests" string="My Requests"
+                        domain="[('create_uid', '=', uid)]"/>
+                <separator/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="rejected" string="Rejected" domain="[('state', '=', 'rejected')]"/>
+                <filter name="withdrawn" string="Withdrawn" domain="[('state', '=', 'cancelled')]"/>
+                <group>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_flow" string="Approval Flow" context="{'group_by': 'flow_id'}"/>
+                    <filter name="group_step" string="Current Step" context="{'group_by': 'current_step_id'}"/>
+                    <filter name="group_requester" string="Requested By" context="{'group_by': 'create_uid'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- List view                                                     -->
+    <!-- ============================================================ -->
+    <record id="view_approval_flow_request_list" model="ir.ui.view">
+        <field name="name">approval.flow.request.list</field>
+        <field name="model">approval.flow.request</field>
+        <field name="arch" type="xml">
+            <list create="0" delete="0"
+                  decoration-muted="state in ('rejected', 'cancelled')"
+                  decoration-bf="can_approve">
+                <field name="can_approve" column_invisible="1"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name" string="Purchase Order"/>
+                <field name="partner_id"/>
+                <field name="requester_id" widget="many2one_avatar_user"/>
+                <field name="amount_total" sum="Total"/>
+                <field name="flow_id" optional="show"/>
+                <field name="current_step_id"/>
+                <field name="waiting_since" optional="hide"/>
+                <field name="activity_ids" widget="list_activity" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'in_progress'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Kanban view: approval cards                                   -->
+    <!-- ============================================================ -->
+    <record id="view_approval_flow_request_kanban" model="ir.ui.view">
+        <field name="name">approval.flow.request.kanban</field>
+        <field name="model">approval.flow.request</field>
+        <field name="arch" type="xml">
+            <kanban create="0">
+                <field name="currency_id"/>
+                <field name="can_approve"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <field name="state" widget="badge"
+                                   decoration-info="state == 'in_progress'"
+                                   decoration-success="state == 'approved'"
+                                   decoration-danger="state == 'rejected'"
+                                   decoration-muted="state == 'cancelled'"/>
+                        </div>
+                        <field name="partner_id" class="text-muted"/>
+                        <field name="amount_total" widget="monetary" class="fw-bold fs-4 my-1"/>
+                        <div class="text-muted small">
+                            <i class="fa fa-sitemap me-1" title="Approval Flow"/>
+                            <field name="flow_id"/>
+                            <t t-if="record.current_step_id.raw_value">
+                                <span> · Step: </span>
+                                <field name="current_step_id" class="fw-bold"/>
+                            </t>
+                        </div>
+                        <footer class="mt-2 pt-2 border-top d-flex align-items-center">
+                            <field name="requester_id" widget="many2one_avatar_user"/>
+                            <field name="waiting_since" widget="date" class="ms-2 small text-muted"/>
+                            <div class="ms-auto d-flex align-items-center gap-1">
+                                <field name="activity_ids" widget="kanban_activity"/>
+                                <button name="action_approve" type="object" string="Approve"
+                                        class="btn btn-sm btn-primary"
+                                        invisible="not can_approve"
+                                        confirm="Are you sure you want to approve this request?"/>
+                                <button name="action_open_reject_wizard" type="object" string="Reject"
+                                        class="btn btn-sm btn-secondary"
+                                        invisible="not can_approve"/>
+                            </div>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Form view                                                     -->
+    <!-- ============================================================ -->
+    <record id="view_approval_flow_request_form" model="ir.ui.view">
+        <field name="name">approval.flow.request.form</field>
+        <field name="model">approval.flow.request</field>
+        <field name="arch" type="xml">
+            <form create="0" delete="0" edit="0" duplicate="0">
+                <header>
+                    <!-- Only the approver of the current step sees these buttons -->
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="not can_approve"
+                            confirm="Are you sure you want to approve this request?"/>
+                    <button name="action_open_reject_wizard" type="object" string="Reject"
+                            invisible="not can_approve"/>
+                    <button name="action_withdraw" type="object" string="Withdraw"
+                            invisible="not can_withdraw"
+                            confirm="Withdraw this approval request? The Purchase Order can then be edited and submitted again."/>
+                    <field name="state" widget="statusbar" statusbar_visible="in_progress,approved,rejected"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Approved" bg_color="text-bg-success"
+                            invisible="state != 'approved'"/>
+                    <widget name="web_ribbon" title="Rejected" bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+                    <widget name="web_ribbon" title="Withdrawn" bg_color="text-bg-secondary"
+                            invisible="state != 'cancelled'"/>
+                    <field name="can_approve" invisible="1"/>
+                    <field name="can_withdraw" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="purchase_order_id" string="Approval for"/>
+                        <h1><field name="purchase_order_id" readonly="1"/></h1>
+                    </div>
+                    <div class="alert alert-info mb-3" role="status" invisible="not can_approve">
+                        <i class="fa fa-hand-o-right me-1" title="Your turn"/>
+                        This request is waiting for <b>your</b> decision.
+                    </div>
+                    <group>
+                        <group string="Purchase Order">
+                            <field name="partner_id"/>
+                            <field name="amount_total" widget="monetary"/>
+                            <field name="requester_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Approval">
+                            <field name="flow_id" readonly="1"/>
+                            <field name="current_step_id" readonly="1" invisible="state != 'in_progress'"/>
+                            <field name="waiting_since" invisible="state != 'in_progress'"/>
+                            <field name="create_date" string="Submitted On"/>
+                            <field name="approved_amount" widget="monetary" invisible="not approved_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="History" name="decision_log">
+                            <field name="log_ids" readonly="1">
+                                <list>
+                                    <field name="create_date" string="Date"/>
+                                    <field name="step_id"/>
+                                    <field name="user_id" widget="many2one_avatar_user"/>
+                                    <field name="decision" widget="badge"
+                                           decoration-info="decision == 'submitted'"
+                                           decoration-success="decision == 'approved'"
+                                           decoration-danger="decision == 'rejected'"
+                                           decoration-muted="decision == 'withdrawn'"/>
+                                    <field name="note" string="Reason / Note"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter: messages, tracked status changes and approval activities -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Actions and menus                                             -->
+    <!-- ============================================================ -->
+    <record id="action_approval_flow_request" model="ir.actions.act_window">
+        <field name="name">Approval Requests</field>
+        <field name="res_model">approval.flow.request</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_approval_flow_request_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No approval requests yet</p>
+            <p>Submit a Purchase Order for approval to see it here.</p>
+        </field>
+    </record>
+
+    <record id="action_my_approvals" model="ir.actions.act_window">
+        <field name="name">My Approvals</field>
+        <field name="res_model">approval.flow.request</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_approval_flow_request_kanban"/>
+        <field name="search_view_id" ref="view_approval_flow_request_search"/>
+        <field name="domain">[('waiting_for_me', '=', True)]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">You're all caught up!</p>
+            <p>No approvals are waiting for your decision.</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_approval_flow_request"
+        name="Approval Requests"
+        parent="menu_approval_flow_root"
+        action="action_approval_flow_request"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_my_approvals"
+        name="My Approvals"
+        parent="menu_approval_flow_root"
+        action="action_my_approvals"
+        sequence="10"/>
+
+</odoo>

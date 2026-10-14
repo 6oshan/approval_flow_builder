@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="approval_flow_builder.FlowBuilder">
+        <div class="o_action o_afb_builder d-flex flex-column h-100">
+
+            <!-- ===== Top bar ===== -->
+            <div class="o_afb_topbar d-flex align-items-center gap-2 px-3 py-2 border-bottom bg-view">
+                <button class="btn btn-link px-1" t-on-click="openFlowForm" title="Back to the flow form">
+                    <i class="fa fa-arrow-left"/>
+                </button>
+                <i class="fa fa-sitemap text-primary fs-4"/>
+                <input type="text" class="form-control o_afb_title fw-bold fs-5 border-0"
+                       placeholder="Flow name"
+                       t-att-value="state.flowName"
+                       t-on-input="onNameInput"/>
+                <span t-if="state.dirty" class="badge text-bg-warning">Unsaved changes</span>
+                <div class="ms-auto d-flex gap-2">
+                    <button class="btn btn-secondary" t-on-click="discard"
+                            t-att-disabled="!state.dirty or state.saving">Discard</button>
+                    <button class="btn btn-primary" t-on-click="save"
+                            t-att-disabled="!state.dirty or state.saving">
+                        <i t-if="state.saving" class="fa fa-circle-o-notch fa-spin me-1"/>
+                        Save
+                    </button>
+                </div>
+            </div>
+
+            <div t-if="state.loading" class="p-5 text-center text-muted">
+                <i class="fa fa-circle-o-notch fa-spin fa-2x"/>
+            </div>
+
+            <div t-elif="!flowId" class="p-5 text-center text-muted">
+                Open the builder from an Approval Flow (Approval Flows → open a flow → Open Visual Builder).
+            </div>
+
+            <div t-else="" class="o_afb_body d-flex flex-grow-1 overflow-hidden">
+
+                <!-- ===== Canvas ===== -->
+                <div class="o_afb_canvas flex-grow-1 overflow-auto">
+                    <div class="o_afb_chain mx-auto py-4">
+
+                        <div t-if="state.inProgressCount" class="alert alert-warning small">
+                            <i class="fa fa-exclamation-triangle me-1"/>
+                            <t t-esc="state.inProgressCount"/> request(s) are currently going through this flow.
+                            Changes apply to their remaining steps.
+                        </div>
+
+                        <!-- Start node -->
+                        <div class="o_afb_terminal o_afb_start">
+                            <i class="fa fa-paper-plane me-2"/>Purchase Order submitted
+                        </div>
+
+                        <t t-foreach="state.steps" t-as="step" t-key="step.key">
+                            <div class="o_afb_connector"><span class="o_afb_arrow"/></div>
+
+                            <div class="o_afb_card"
+                                 t-att-class="{
+                                    'is-selected': state.selectedKey === step.key,
+                                    'is-dragging': state.dragIndex === step_index,
+                                    'is-drop-target': state.dropIndex === step_index and state.dragIndex !== step_index,
+                                    'is-empty': !step.employee_id and !step.group_id
+                                 }"
+                                 draggable="true"
+                                 t-on-dragstart="(ev) => this.onDragStart(ev, step_index)"
+                                 t-on-dragover="(ev) => this.onDragOver(ev, step_index)"
+                                 t-on-drop="(ev) => this.onDrop(ev, step_index)"
+                                 t-on-dragend="onDragEnd"
+                                 t-on-click="() => this.selectStep(step.key)">
+
+                                <span class="o_afb_handle" title="Drag to reorder">
+                                    <i class="fa fa-ellipsis-v"/><i class="fa fa-ellipsis-v"/>
+                                </span>
+
+                                <span class="o_afb_step_no" t-esc="step_index + 1"/>
+
+                                <div class="o_afb_avatar" t-att-class="{ 'is-group': step.type === 'group' }">
+                                    <img t-if="avatarUrl(step)" t-att-src="avatarUrl(step)" alt=""/>
+                                    <i t-elif="step.type === 'group'" class="fa fa-users"/>
+                                    <span t-else="" t-esc="initials(step.name)"/>
+                                </div>
+
+                                <div class="o_afb_card_body">
+                                    <div class="o_afb_name" t-esc="step.name or 'Choose an approver…'"/>
+                                    <div class="o_afb_meta">
+                                        <span class="o_afb_type">
+                                            <i t-att-class="step.type === 'group' ? 'fa fa-users me-1' : 'fa fa-user me-1'"/>
+                                            <t t-esc="step.type === 'group' ? 'Group (any member)' : 'Employee'"/>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <span class="o_afb_pill" t-att-class="{ 'is-conditional': step.amount > 0 }">
+                                    <t t-if="step.amount > 0">If amount &gt; <t t-esc="formatAmount(step.amount)"/></t>
+                                    <t t-else="">Always</t>
+                                </span>
+
+                                <div class="o_afb_card_actions">
+                                    <button class="btn btn-sm btn-link" title="Move up"
+                                            t-att-disabled="step_first"
+                                            t-on-click.stop="() => this.moveStep(step.key, -1)">
+                                        <i class="fa fa-chevron-up"/>
+                                    </button>
+                                    <button class="btn btn-sm btn-link" title="Move down"
+                                            t-att-disabled="step_last"
+                                            t-on-click.stop="() => this.moveStep(step.key, 1)">
+                                        <i class="fa fa-chevron-down"/>
+                                    </button>
+                                    <button class="btn btn-sm btn-link text-danger" title="Remove approver"
+                                            t-on-click.stop="() => this.removeStep(step.key)">
+                                        <i class="fa fa-times"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+
+                        <div class="o_afb_connector"><span class="o_afb_arrow"/></div>
+
+                        <!-- Add node -->
+                        <button class="o_afb_add btn" t-on-click="addStep">
+                            <i class="fa fa-plus me-1"/>Add approver
+                        </button>
+
+                        <div class="o_afb_connector"><span class="o_afb_arrow"/></div>
+
+                        <!-- End node -->
+                        <div class="o_afb_terminal o_afb_end">
+                            <i class="fa fa-check-circle me-2"/>Purchase Order approved
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== Side panel ===== -->
+                <div class="o_afb_panel border-start bg-view">
+                    <t t-set="sel" t-value="selectedStep"/>
+                    <div t-if="!sel" class="p-4 text-muted">
+                        <h5 class="text-body">How it works</h5>
+                        <ul class="ps-3 small">
+                            <li>Approvers are asked <b>one after another</b>, top to bottom.</li>
+                            <li><b>Drag</b> a card (or use the arrows) to change the order.</li>
+                            <li>Click a card to choose the approver and the amount condition.</li>
+                            <li>A card with an amount only applies when the PO total is <b>greater</b> than that amount.</li>
+                            <li>Click <b>Save</b> when you are done.</li>
+                        </ul>
+                    </div>
+
+                    <div t-else="" class="p-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <h5 class="mb-0">Step <t t-esc="selectedIndex + 1"/></h5>
+                            <button class="btn btn-sm btn-link ms-auto" t-on-click="() => this.selectStep(sel.key)" title="Close panel">
+                                <i class="fa fa-times"/>
+                            </button>
+                        </div>
+
+                        <label class="form-label fw-bold small">Approver type</label>
+                        <div class="btn-group w-100 mb-3" role="group">
+                            <button class="btn" t-att-class="sel.type === 'employee' ? 'btn-primary' : 'btn-outline-primary'"
+                                    t-on-click="() => this.setType('employee')">
+                                <i class="fa fa-user me-1"/>Employee
+                            </button>
+                            <button class="btn" t-att-class="sel.type === 'group' ? 'btn-primary' : 'btn-outline-primary'"
+                                    t-on-click="() => this.setType('group')">
+                                <i class="fa fa-users me-1"/>Group
+                            </button>
+                        </div>
+
+                        <label class="form-label fw-bold small">
+                            <t t-esc="sel.type === 'group' ? 'Group' : 'Employee'"/>
+                        </label>
+                        <div t-if="sel.name" class="o_afb_current mb-2">
+                            <i class="fa fa-check text-success me-1"/><t t-esc="sel.name"/>
+                        </div>
+                        <input type="text" class="form-control mb-2" t-model="state.search"
+                               t-att-placeholder="sel.type === 'group' ? 'Search groups…' : 'Search employees…'"/>
+                        <div class="o_afb_options list-group mb-3">
+                            <t t-foreach="pickerOptions" t-as="opt" t-key="opt.id">
+                                <button class="list-group-item list-group-item-action d-flex justify-content-between"
+                                        t-att-class="{ active: (sel.type === 'group' ? sel.group_id : sel.employee_id) === opt.id, 'o_afb_option_disabled': opt.disabled }"
+                                        t-att-disabled="opt.disabled"
+                                        t-att-title="opt.disabled ? 'Link this employee to a user (Employees → Settings → Related User) so they can approve.' : ''"
+                                        t-on-click="() => this.pickApprover(opt)">
+                                    <span t-esc="opt.name"/>
+                                    <small class="opacity-75">
+                                        <i t-if="opt.disabled" class="fa fa-user-times me-1"/>
+                                        <t t-esc="opt.sub"/>
+                                    </small>
+                                </button>
+                            </t>
+                            <div t-if="!pickerOptions.length" class="text-muted small p-2">
+                                No match.
+                            </div>
+                            <div t-if="sel.type === 'employee'" class="form-text px-1">
+                                Only employees linked to a user can approve.
+                            </div>
+                        </div>
+
+                        <label class="form-label fw-bold small">Condition</label>
+                        <div class="input-group mb-1">
+                            <span class="input-group-text">Amount &gt;</span>
+                            <input type="number" min="0" step="any" class="form-control"
+                                   t-att-value="sel.amount || ''"
+                                   placeholder="0 = always"
+                                   t-on-input="onAmountInput"/>
+                            <span class="input-group-text" t-esc="state.currency.symbol"/>
+                        </div>
+                        <div class="form-text mb-3">
+                            Leave empty or 0 to always ask this approver.
+                        </div>
+
+                        <button class="btn btn-outline-danger w-100" t-on-click="() => this.removeStep(sel.key)">
+                            <i class="fa fa-trash me-1"/>Remove this approver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

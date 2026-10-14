@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="purchase_order_form_approval_flow" model="ir.ui.view">
+        <field name="name">purchase.order.form.approval.flow</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Approvals smart button -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_approval_requests" type="object"
+                        class="oe_stat_button" icon="fa-check-square-o"
+                        invisible="approval_request_count == 0">
+                    <field name="approval_request_count" widget="statinfo" string="Approvals"/>
+                </button>
+            </xpath>
+
+            <!-- Approval Flow selection and status badge -->
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field
+                    name="approval_flow_id"
+                    string="Approval Flow"
+                    options="{'no_create': True}"
+                    readonly="approval_state in ('in_progress', 'approved')"
+                />
+                <button name="action_open_approval_builder" type="object"
+                        string="Configure approval flow" icon="fa-sitemap"
+                        class="btn-link p-0" colspan="2"
+                        groups="approval_flow_builder.group_approval_flow_administrator"
+                        invisible="not approval_flow_id"/>
+                <field name="approval_state" string="Approval Status" widget="badge"
+                       invisible="approval_state == 'none'"
+                       decoration-info="approval_state == 'in_progress'"
+                       decoration-success="approval_state == 'approved'"
+                       decoration-danger="approval_state == 'rejected'"/>
+                <field name="approval_needed" invisible="1"/>
+                <div colspan="2" class="text-muted mb-2"
+                     invisible="approval_needed or approval_state != 'none' or state not in ('draft', 'sent')">
+                    <i class="fa fa-check-circle text-success me-1" title="No approval needed"/>
+                    No approval needed: this order can be confirmed directly.
+                </div>
+            </xpath>
+
+            <!-- While approval is in progress the order is locked: read-only lines,
+                 no Confirm button, and a banner explaining why. -->
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="readonly">state == 'cancel' or locked or approval_state == 'in_progress'</attribute>
+            </xpath>
+            <xpath expr="//button[@id='draft_confirm']" position="attributes">
+                <attribute name="invisible">state != 'draft' or approval_state == 'in_progress'</attribute>
+            </xpath>
+            <xpath expr="//button[@id='bid_confirm']" position="attributes">
+                <attribute name="invisible">state != 'sent' or approval_state == 'in_progress'</attribute>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="before">
+                <div class="alert alert-info mb-2" role="status"
+                     invisible="approval_state != 'in_progress' or state not in ('draft', 'sent')">
+                    <i class="fa fa-lock me-1" title="Locked"/>
+                    This order is waiting for approval, so it is locked.
+                    Open <b>Approvals</b> to follow it, or withdraw the request to make changes.
+                </div>
+            </xpath>
+
+            <!-- Submit for Approval button (also allows re-submitting after a rejection) -->
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_submit_for_approval"
+                    string="Submit for Approval"
+                    type="object"
+                    class="btn-primary"
+                    invisible="not approval_needed or approval_state in ('in_progress', 'approved') or state not in ('draft', 'sent')"
+                />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

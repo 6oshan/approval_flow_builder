@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Windows / macOS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Logs, backups, local databases
+*.log
+*.bak
+*.zip
+*.dump

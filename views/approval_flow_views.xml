@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<odoo>
+
+    <!-- Approval Flow List View -->
+    <record id="view_approval_flow_list" model="ir.ui.view">
+        <field name="name">approval.flow.list</field>
+        <field name="model">approval.flow</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="step_count" string="Steps"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Approval Flow Form View -->
+    <record id="view_approval_flow_form" model="ir.ui.view">
+        <field name="name">approval.flow.form</field>
+        <field name="model">approval.flow</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_builder" type="object" string="Open Visual Builder"
+                            class="btn-primary" icon="fa-sitemap"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name" string="Approval Flow"/>
+                        <h1><field name="name" placeholder="e.g. Purchases above 50,000"/></h1>
+                    </div>
+
+                    <notebook>
+                        <page string="Approval Steps" name="steps">
+                            <p class="text-muted mb-2">
+                                Approvers are asked one after another, from top to bottom.
+                                Drag the handle to change the order. A step with an amount
+                                only applies when the Purchase Order total is greater than that amount.
+                            </p>
+                            <field name="step_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="employee_id" widget="many2one_avatar_employee"/>
+                                    <field name="group_id"/>
+                                    <field name="amount_threshold"/>
+                                    <field name="currency_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <!-- Approval Flow Window Action -->
+    <record id="action_approval_flow" model="ir.actions.act_window">
+        <field name="name">Approval Flows</field>
+        <field name="res_model">approval.flow</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first approval flow</p>
+            <p>Add approvers (employees or groups) in the order they must approve.</p>
+        </field>
+    </record>
+
+
+    <!-- Approval Flow Menu -->
+    <menuitem
+        id="menu_approval_flow_root"
+        name="Approval Flow Builder"
+        web_icon="approval_flow_builder,static/description/icon.png"
+        groups="approval_flow_builder.group_approval_flow_approver"
+        sequence="10"
+    />
+
+    <!-- Only Approval Flow Administrators configure flows -->
+    <menuitem
+        id="menu_approval_flow"
+        name="Approval Flows"
+        parent="menu_approval_flow_root"
+        action="action_approval_flow"
+        groups="approval_flow_builder.group_approval_flow_administrator"
+        sequence="30"
+    />
+</odoo>

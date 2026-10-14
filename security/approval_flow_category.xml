@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="module_category_approval_flow" model="ir.module.category">
+        <field name="name">Approval Flow</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="res_groups_privilege_approval_flow" model="res.groups.privilege">
+        <field name="name">Approval Flow</field>
+        <field name="category_id" ref="module_category_approval_flow"/>
+    </record>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Configuration screen (SRS FR-14) -->
+    <record id="res_config_settings_view_form_approval_flow" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.approval.flow</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Approval Flow" string="Approval Flow" name="approval_flow_builder"
+                     groups="approval_flow_builder.group_approval_flow_administrator">
+                    <block title="Approval Policy" name="afb_policy">
+                        <setting id="afb_require_approval" string="Require approval"
+                                 help="Purchase Orders above the minimum amount cannot be confirmed without an approved request. Orders at or below it are confirmed directly, without approval.">
+                            <field name="afb_require_approval"/>
+                            <div class="mt-2" invisible="not afb_require_approval">
+                                <label for="afb_min_amount" string="When total is greater than" class="o_light_label me-2"/>
+                                <field name="afb_min_amount" class="oe_inline"/>
+                            </div>
+                        </setting>
+                        <setting id="afb_allow_self_approval" string="Allow self-approval"
+                                 help="When off, the person who submits a Purchase Order cannot approve it. If they are the only approver of a step, an Approval Flow Administrator approves instead.">
+                            <field name="afb_allow_self_approval"/>
+                        </setting>
+                        <setting id="afb_default_flow" string="Default approval flow"
+                                 help="Pre-selected on new Purchase Orders and used for approvals. It decides who approves; with Require approval on, the minimum amount decides whether approval is needed.">
+                            <field name="afb_default_flow_id" options="{'no_create': True}"/>
+                        </setting>
+                    </block>
+                    <block title="Defaults &amp; Notifications" name="afb_defaults">
+                        <setting id="afb_default_currency" string="Currency for amount conditions"
+                                 help="Used for new amount conditions in the visual builder. Empty = company currency.">
+                            <field name="afb_default_currency_id" options="{'no_create': True}"/>
+                        </setting>
+                        <setting id="afb_email_notify" string="Email notifications"
+                                 help="Notify approvers when a request reaches them, and requesters when it is approved or rejected. In-app activities are always created.">
+                            <field name="afb_email_notify"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_approval_flow_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'approval_flow_builder', 'bin_size': False}</field>
+    </record>
+
+    <menuitem
+        id="menu_approval_flow_config"
+        name="Configuration"
+        parent="menu_approval_flow_root"
+        groups="approval_flow_builder.group_approval_flow_administrator"
+        sequence="90"/>
+
+    <menuitem
+        id="menu_approval_flow_settings"
+        name="Settings"
+        parent="menu_approval_flow_config"
+        action="action_approval_flow_settings"
+        groups="base.group_system"
+        sequence="10"/>
+
+</odoo>

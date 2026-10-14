@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Audit Log (SRS FR-12): read-only list of every approval decision -->
+    <record id="view_approval_flow_log_search" model="ir.ui.view">
+        <field name="name">approval.flow.log.search</field>
+        <field name="model">approval.flow.log</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="purchase_order_id"/>
+                <field name="user_id"/>
+                <field name="flow_id"/>
+                <filter name="submitted" string="Submitted" domain="[('decision', '=', 'submitted')]"/>
+                <filter name="approved" string="Approved" domain="[('decision', '=', 'approved')]"/>
+                <filter name="rejected" string="Rejected" domain="[('decision', '=', 'rejected')]"/>
+                <filter name="withdrawn" string="Withdrawn" domain="[('decision', '=', 'withdrawn')]"/>
+                <separator/>
+                <filter name="my_decisions" string="My Decisions" domain="[('user_id', '=', uid)]"/>
+                <filter name="create_date" string="Date" date="create_date"/>
+                <group>
+                    <filter name="group_po" string="Purchase Order" context="{'group_by': 'purchase_order_id'}"/>
+                    <filter name="group_user" string="Decided By" context="{'group_by': 'user_id'}"/>
+                    <filter name="group_decision" string="Decision" context="{'group_by': 'decision'}"/>
+                    <filter name="group_flow" string="Approval Flow" context="{'group_by': 'flow_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_approval_flow_log_list" model="ir.ui.view">
+        <field name="name">approval.flow.log.list</field>
+        <field name="model">approval.flow.log</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0" default_order="create_date desc">
+                <field name="create_date" string="Date"/>
+                <field name="purchase_order_id"/>
+                <field name="flow_id" optional="show"/>
+                <field name="step_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="decision" widget="badge"
+                       decoration-info="decision == 'submitted'"
+                       decoration-success="decision == 'approved'"
+                       decoration-danger="decision == 'rejected'"
+                       decoration-muted="decision == 'withdrawn'"/>
+                <field name="note" string="Reason / Note" optional="show"/>
+                <field name="request_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_approval_flow_log" model="ir.actions.act_window">
+        <field name="name">Audit Log</field>
+        <field name="res_model">approval.flow.log</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_approval_flow_log_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">No approval decisions yet</p>
+            <p>Every approve, reject and withdraw action is recorded here and cannot be changed.</p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_approval_flow_log"
+        name="Audit Log"
+        parent="menu_approval_flow_root"
+        action="action_approval_flow_log"
+        sequence="25"/>
+
+</odoo>
