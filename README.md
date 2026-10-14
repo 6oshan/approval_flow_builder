@@ -11,6 +11,8 @@ Design an approval chain (Manager → Finance → Director…), add amount condi
 
 ![Visual flow builder](docs/screenshots/01_visual_builder.png)
 
+📖 **[User Guide](docs/USER_GUIDE.md)** — step-by-step instructions for administrators, requesters and approvers.
+
 ---
 
 ## Features
