@@ -9,7 +9,7 @@ Multi-level **Purchase Order approvals** for Odoo 19 Community, with a **drag-an
 
 Design an approval chain (Manager → Finance → Director…), add amount conditions, and Odoo makes sure no Purchase Order is confirmed without the right sign-offs. Every decision is recorded in a tamper-proof audit log.
 
-![Visual flow builder](docs/screenshots/01_visual_builder.png)
+![Visual flow builder](approval_flow_builder/static/description/screenshot_builder.png)
 
 📖 **[User Guide](docs/USER_GUIDE.md)** — step-by-step instructions for administrators, requesters and approvers.
 
@@ -68,12 +68,20 @@ Design an approval chain (Manager → Finance → Director…), add amount condi
 
 **Requirements:** Odoo 19.0 Community, with the `purchase`, `hr` and `mail` apps.
 
-1. Clone into your custom addons folder:
+**Option A — Odoo Apps Store:** download the module from the Odoo Apps Store, unzip the `approval_flow_builder` folder into your custom addons folder.
+
+**Option B — from GitHub:**
+
+1. Clone the repository anywhere, for example next to your other addons:
    ```bash
-   cd /path/to/custom-addons
+   cd /path/to
    git clone -b 19.0 https://github.com/6oshan/approval_flow_builder.git
    ```
-2. Make sure the folder is in `addons_path` in your `odoo.conf`.
+   The module itself is the `approval_flow_builder/` folder **inside** the repository.
+2. Add the **repository folder** to `addons_path` in your `odoo.conf`:
+   ```ini
+   addons_path = /path/to/odoo/addons,/path/to/approval_flow_builder
+   ```
 3. Restart Odoo and install:
    ```bash
    ./odoo-bin -c odoo.conf -d <your_db> -i approval_flow_builder
@@ -132,8 +140,8 @@ Submit for Approval ──► Step 1 ──► Step 2 (if amount > X) ──► 
 | `approval.flow.reject.wizard` | Reject-with-reason dialog. |
 | `purchase.order` (inherited) | Approval policy, submit / confirm checks, order lock, amount lock. |
 
-- Frontend: Owl 2 client action (`static/src/flow_builder`) with native HTML5 drag and drop.
-- Security: `ir.model.access.csv` + record rules in `security/approval_flow_security.xml`.
+- Frontend: Owl 2 client action (`approval_flow_builder/static/src/flow_builder`) with native HTML5 drag and drop.
+- Security: `ir.model.access.csv` + record rules in `approval_flow_builder/security/`.
 
 ---
 

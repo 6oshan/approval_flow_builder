@@ -1,0 +1,158 @@
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;padding:24px 16px 8px;">
+      <h1 style="color:#714B67;font-size:40px;font-weight:700;margin-bottom:8px;">Approval Flow Builder</h1>
+      <h3 style="color:#555;font-weight:400;margin-top:0;">Multi-level Purchase Order approvals with a drag-and-drop visual builder</h3>
+      <p style="margin-top:16px;">
+        <span style="display:inline-block;background:#714B67;color:#fff;padding:4px 12px;border-radius:14px;margin:3px;">Odoo 19</span>
+        <span style="display:inline-block;background:#00A09D;color:#fff;padding:4px 12px;border-radius:14px;margin:3px;">Free &amp; open source (LGPL-3)</span>
+        <span style="display:inline-block;background:#444;color:#fff;padding:4px 12px;border-radius:14px;margin:3px;">23 automated tests</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Design your approval chain visually</h2>
+    <p style="text-align:center;font-size:16px;color:#555;max-width:760px;margin:0 auto 16px;">
+      Add approvers, drag to reorder, and set amount rules — for example, Finance only above ₹2,00,000 and the Director only above ₹10,00,000.
+      No forms full of rules: you see the chain exactly as it runs.
+    </p>
+    <div style="text-align:center;">
+      <img src="screenshot_builder.png" alt="Visual approval flow builder" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Key features</h2>
+    <table style="width:100%;border-collapse:separate;border-spacing:12px;">
+      <tr>
+        <td style="width:33%;vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Visual builder</h4>
+          Drag-and-drop approval chains. Approvers can be a specific employee or a user group (any member can approve).
+        </td>
+        <td style="width:33%;vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Amount rules</h4>
+          Each step can apply only above an amount. Orders below a configurable minimum are confirmed directly — no approval needed.
+        </td>
+        <td style="width:33%;vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">No bypassing</h4>
+          Confirm Order is blocked until approved. The order is locked while waiting, and a confirmed order cannot be increased above the approved amount.
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">My Approvals</h4>
+          Approvers get a to-do and an inbox notification, and approve or reject from a kanban board in one click.
+        </td>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Reject with a reason</h4>
+          A reason is required. The requester is notified, edits the order and submits again — or withdraws the request.
+        </td>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Audit log</h4>
+          Every Submitted, Approved, Rejected and Withdrawn event with user, step, time and reason. Entries cannot be edited.
+        </td>
+      </tr>
+      <tr>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Self-approval control</h4>
+          Optionally prevent people from approving their own orders; the step goes to an Approval Flow Administrator instead.
+        </td>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Secure by design</h4>
+          Two security groups and record rules: users only see requests they submitted, decided or must decide.
+        </td>
+        <td style="vertical-align:top;background:#f8f5f7;border-radius:8px;padding:16px;">
+          <h4 style="color:#714B67;">Tested</h4>
+          23 automated tests; Odoo's own Purchase test suite passes with the module installed.
+        </td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Approvers act in one click</h2>
+    <p style="text-align:center;font-size:16px;color:#555;">Each approver sees only what is waiting for them.</p>
+    <div style="text-align:center;">
+      <img src="screenshot_my_approvals.png" alt="My Approvals" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">The order is locked while it waits</h2>
+    <p style="text-align:center;font-size:16px;color:#555;">Lines, vendor and currency cannot change during approval, and Confirm Order stays hidden.</p>
+    <div style="text-align:center;">
+      <img src="screenshot_po_locked.png" alt="Purchase Order locked during approval" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Reject with a reason</h2>
+    <div style="text-align:center;">
+      <img src="screenshot_reject.png" alt="Reject with a reason" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Full history and audit log</h2>
+    <div style="text-align:center;">
+      <img src="screenshot_history.png" alt="Approval history" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);margin-bottom:20px;"/>
+      <img src="screenshot_audit_log.png" alt="Audit log" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Small orders don't wait</h2>
+    <p style="text-align:center;font-size:16px;color:#555;">Below your minimum amount, the order shows "No approval needed" and can be confirmed directly.</p>
+    <div style="text-align:center;">
+      <img src="screenshot_no_approval.png" alt="No approval needed" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:1100px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Simple configuration</h2>
+    <div style="text-align:center;">
+      <img src="screenshot_settings.png" alt="Settings" style="max-width:100%;border:1px solid #ddd;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.12);"/>
+    </div>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:900px;margin:0 auto;">
+    <h2 style="color:#714B67;text-align:center;">Getting started</h2>
+    <ol style="font-size:16px;line-height:1.8;">
+      <li>Install the module (depends on Purchase, Employees and Discuss).</li>
+      <li>Give approvers the <b>Approval Flow → Approver</b> role and flow designers the <b>Administrator</b> role. Link each approving employee to a user.</li>
+      <li>Open <b>Approval Flow Builder → Approval Flows → New → Open Visual Builder</b> and build your chain.</li>
+      <li>In <b>Configuration → Settings</b>, turn on <b>Require approval</b>, set the minimum amount and the default flow.</li>
+      <li>Create a Purchase Order above the minimum and click <b>Submit for Approval</b>.</li>
+    </ol>
+    <p style="text-align:center;font-size:15px;color:#555;margin-top:20px;">
+      Full user guide, source code and issue tracker:
+      <a href="https://github.com/6oshan/approval_flow_builder" target="_blank">github.com/6oshan/approval_flow_builder</a>
+    </p>
+  </div>
+</section>
+
+<section class="oe_container">
+  <div class="oe_row oe_spaced" style="max-width:900px;margin:0 auto;text-align:center;padding-bottom:24px;">
+    <h3 style="color:#714B67;">Need help or a customization?</h3>
+    <p style="font-size:15px;color:#555;">Open an issue on GitHub or write to <a href="mailto:roshanjosekurian@gmail.com">roshanjosekurian@gmail.com</a>.</p>
+  </div>
+</section>

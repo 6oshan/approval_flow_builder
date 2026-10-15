@@ -1,12 +1,17 @@
 {
     'name': 'Approval Flow Builder',
-    'version': '19.0.1.2.0',
+    'version': '19.0.1.2.1',
     'category': 'Purchases',
-    'author': 'Roshan',
+    'author': 'Roshan Jose Kurian',
+    'website': 'https://github.com/6oshan/approval_flow_builder',
+    'maintainer': 'Roshan Jose Kurian',
     'license': 'LGPL-3',
-    'summary': 'Visual approval flow builder for Purchase Orders',
+    'summary': 'Multi-level purchase order approval with a drag-and-drop visual builder, amount rules, order locking and audit log',
     'description': """
-        Visual approval flow builder for Purchase Orders.
+        Multi-level Purchase Order approval workflow for Odoo 19:
+        drag-and-drop approval chains, employee or group approvers,
+        amount-based steps, minimum approval amount, order locking,
+        approved-amount protection, reject with reason and audit log.
     """,
     'depends': [
         'mail',
@@ -32,6 +37,7 @@
             'approval_flow_builder/static/src/flow_builder/flow_builder.xml',
         ],
     },
+    'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,
 }
