@@ -97,7 +97,7 @@ To upgrade after pulling new code:
 
 ## Configuration
 
-1. **Users** – *Settings → Users*: give approvers the **Approval Flow Approver** role, and whoever designs flows the **Approval Flow Administrator** role. Each employee used as an approver must be linked to a user.
+1. **Users** – *Settings → Users*: give approvers the **Approval Flow Approver** role, and whoever designs flows the **Approval Flow Administrator** role (the admin user gets it automatically on install). Each employee used as an approver must be linked to a user.
 2. **Flows** – *Approval Flow Builder → Approval Flows → New → Open Visual Builder*: add approvers in order and set optional amount conditions.
 3. **Settings** – *Approval Flow Builder → Configuration → Settings*:
 

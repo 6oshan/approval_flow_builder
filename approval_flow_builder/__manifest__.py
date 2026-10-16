@@ -1,6 +1,6 @@
 {
     'name': 'Approval Flow Builder',
-    'version': '19.0.1.2.1',
+    'version': '19.0.1.2.2',
     'category': 'Purchases',
     'author': 'Roshan Jose Kurian',
     'website': 'https://github.com/6oshan/approval_flow_builder',

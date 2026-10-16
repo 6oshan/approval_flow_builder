@@ -237,6 +237,10 @@ class TestApprovalFlow(TransactionCase):
             self.env['approval.flow'].with_user(self.manager).builder_load(self.flow.id)
 
     def test_15_default_flow_from_configuration(self):
+        # The admin who installs the module is an Approval Flow Administrator,
+        # so the app menu is visible straight after installation.
+        admin_group = self.env.ref('approval_flow_builder.group_approval_flow_administrator')
+        self.assertIn(self.env.ref('base.user_admin'), admin_group.user_ids)
         other = self.env['approval.flow'].create({
             'name': 'Default Flow', 'step_ids': [(0, 0, {'employee_id': self.emp_finance.id})]})
         self._set_param('default_flow_id', str(other.id))
