@@ -10,7 +10,7 @@ Multi-level **Purchase Order approvals** for Odoo 19 Community, with a **drag-an
 
 Design an approval chain (Manager → Finance → Director…), add amount conditions, and Odoo makes sure no Purchase Order is confirmed without the right sign-offs. Every decision is recorded in a tamper-proof audit log.
 
-![Visual flow builder](approval_flow_builder/static/description/screenshot_builder.png)
+![Approval Flow Builder demo](docs/demo.gif)
 
 🛒 **[Get it free on the Odoo Apps Store](https://apps.odoo.com/apps/modules/19.0/approval_flow_builder)**
 
