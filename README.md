@@ -4,12 +4,15 @@
 ![License: LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue)
 ![Tests](https://img.shields.io/badge/tests-23%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)
+[![Odoo Apps Store](https://img.shields.io/badge/Odoo%20Apps%20Store-Free%20download-714B67)](https://apps.odoo.com/apps/modules/19.0/approval_flow_builder)
 
 Multi-level **Purchase Order approvals** for Odoo 19 Community, with a **drag-and-drop visual builder**.
 
 Design an approval chain (Manager → Finance → Director…), add amount conditions, and Odoo makes sure no Purchase Order is confirmed without the right sign-offs. Every decision is recorded in a tamper-proof audit log.
 
 ![Visual flow builder](approval_flow_builder/static/description/screenshot_builder.png)
+
+🛒 **[Get it free on the Odoo Apps Store](https://apps.odoo.com/apps/modules/19.0/approval_flow_builder)**
 
 📖 **[User Guide](docs/USER_GUIDE.md)** — step-by-step instructions for administrators, requesters and approvers.
 
@@ -66,9 +69,16 @@ Design an approval chain (Manager → Finance → Director…), add amount condi
 
 ## Installation
 
-**Requirements:** Odoo 19.0 Community, with the `purchase`, `hr` and `mail` apps.
+**Requirements:** Odoo 19.0 Community, self-hosted or on Odoo.sh (Odoo Online does not allow third-party modules). The `purchase`, `hr` and `mail` apps are installed automatically if missing.
 
-**Option A — Odoo Apps Store:** download the module from the Odoo Apps Store, unzip the `approval_flow_builder` folder into your custom addons folder.
+**Option A — Odoo Apps Store (recommended):**
+
+1. Open the [Approval Flow Builder page](https://apps.odoo.com/apps/modules/19.0/approval_flow_builder) and click **Download for v 19.0**.
+2. Unzip it and copy the `approval_flow_builder` folder into a folder that is in your `addons_path` (for example your custom addons folder).
+3. Restart Odoo, then *Apps → Update Apps List → search "Approval Flow Builder" → Activate*.
+4. The admin user gets the **Approval Flow Administrator** role automatically — open *Approval Flow Builder* and follow the [User Guide](docs/USER_GUIDE.md).
+
+On **Odoo.sh**, use the **Deploy on Odoo.sh** button on the store page, or add the module to your repository.
 
 **Option B — from GitHub:**
 
